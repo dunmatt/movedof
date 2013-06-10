@@ -37,9 +37,8 @@ critical_parameters = [ ("P Gain", "P")
 
 def doList(addr):
   values = queryEverything(addr)
-  print values
-  # for key, value in values:
-  #   print "{0}: {1}".format(key, value)
+  for k, v in values.iteritems():
+    print "{0}: {1}".format(k, v)
 
 
 def doBackup(addr, filename):
@@ -47,8 +46,8 @@ def doBackup(addr, filename):
   if filename:
     with open(filename, "w") as f:
       pickle.dump(values, f)
-      for key, value in values:
-        print "{0}: {1}".format(key, value)
+      for k, v in values.iteritems():
+        print "{0}: {1}".format(k, v)
   else:
     print pickle.dumps(values)
   return values
