@@ -13,6 +13,7 @@ Options:
   -i <if> --input-file=<if>   Load the parameters from a file into a DOF.
 """
 from docopt import docopt
+from subprocess import check_output as run
 
 critical_parameters = [ ("P Gain", "P")
                       , ("I Gain", "I")
@@ -30,7 +31,10 @@ critical_parameters = [ ("P Gain", "P")
 
 
 def doBackup(addr, filename):
-  pass
+  for name, cmd in critical_parameters:
+    print "Querying {0} on {1}.".format(name, addr)
+    raw_output = run (["XiControl", addr, "-c", cmd])
+    print raw_output
 
 
 def doRestore(addr, filename):
@@ -42,7 +46,7 @@ def doMove(src, dest, filename):
 
 
 if __name__ == '__main__':
-    arguments = docopt(__doc__, version='Move DOF 1.0')
+    arguments = docopt(__doc__, version='Move DOF 0.1')
     if arguments["backup"]:
       doBackup(arguments["<address>"], arguments["--output-file"])
     elif arguments["restore"]:
