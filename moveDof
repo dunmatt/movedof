@@ -2,9 +2,11 @@
 """Move DOF.
 
 Usage:
+  moveDof list <address>
   moveDof backup <address> [--output-file=<of> | -o <of>]
   moveDof restore <address> (--input-file=<if> | -i <if>)
   moveDof move <from-address> <to-address> [--output-file=<of> | -o <of>]
+  moveDof swap <a-address> <b-address>
   moveDof (-h | --help)
 
 Options:
@@ -12,6 +14,7 @@ Options:
   -o <of> --output-file=<of>  Store the parameters in a file, default is stdout.
   -i <if> --input-file=<if>   Load the parameters from a file into a DOF.
 """
+import pickle
 import re
 
 from docopt import docopt
@@ -32,28 +35,66 @@ critical_parameters = [ ("P Gain", "P")
                       ]
 
 
+def doList(addr):
+  values = queryEverything(addr)
+  for key, value in values:
+    print "{0}: {1}".format(key, value)
+
+
 def doBackup(addr, filename):
+  values = queryEverything(addr)
+  if filename:
+    with open(filename, "w") as f:
+      pickle.dump(values, f)
+      for key, value in values:
+        print "{0}: {1}".format(key, value)
+  else:
+    print pickle.dumps(values)
+  return values
+
+
+def queryEverything(addr):
+  results = {}
   for name, cmd in critical_parameters:
-    print "Querying {0} on {1}.".format(name, addr)
     raw_output = run(["XiControl", "-n", addr, "-c", '? {0}'.format(cmd)])
-    result = re.search("^\*[^:]+:(.+)$",  raw_output, flags=re.MULTILINE)
+    result = re.search("^\*[^:]+:\s*(.+\S)\s*$",  raw_output, flags=re.MULTILINE)
     if result:
-      print "{0}: {1}".format(name, result.group(1))
+      results[name] = result.group(1)
+  return results
 
 
 def doRestore(addr, filename):
-  pass
+  with open(filename) as f:
+    values = pickle.load(f)
+    setEverything(addr, values)
+
+
+def setEverything(addr, values):
+  for name, cmd in critical_parameters:
+    if name in values:
+      run(["XiControl", "-n", addr, "-c", "o {0} {1}".format(cmd, values[name])])
 
 
 def doMove(src, dest, filename):
-  pass
+  setEverything(dest, doBackup(src, filename))
+
+
+def doSwap(a, b):
+  aVal = queryEverything(a)
+  bVal = queryEverything(b)
+  setEverything(a, bVal)
+  setEverything(b, aVal)
 
 
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='Move DOF 0.1')
-    if arguments["backup"]:
+    if arguments["list"]:
+      doList(arguments["<address>"])
+    elif arguments["backup"]:
       doBackup(arguments["<address>"], arguments["--output-file"])
     elif arguments["restore"]:
       doRestore(arguments["<address>"], arguments["--input-file"])
     elif arguments["move"]:
       doMove(arguments["<from-address>"], arguments["<to-address>"], arguments["--output-file"])
+    elif arguments["swap"]:
+      doSwap(arguments["<a-address>"], arguments["<b-address>"])
