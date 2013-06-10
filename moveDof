@@ -14,6 +14,20 @@ Options:
 """
 from docopt import docopt
 
+critical_parameters = [ ("P Gain", "P")
+                      , ("I Gain", "I")
+                      , ("D Gain", "D")
+                      , ("Dead Zone", "Z")
+                      , ("Lower Limit", "L")
+                      , ("Upper Limit", "U")
+                      , ("Limit Flags", "K")
+                      , ("Accumulator Limit", "A")
+                      , ("Encoder Frequency", "F")
+                      , ("Max PWM DC", "W")
+                      , ("Mode", "M")
+                      , ("QEI Config", "E")
+                      ]
+
 
 def doBackup(addr, filename):
   pass
