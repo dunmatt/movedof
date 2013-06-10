@@ -87,14 +87,14 @@ def doSwap(a, b):
 
 
 if __name__ == '__main__':
-    arguments = docopt(__doc__, version='Move DOF 0.1')
-    if arguments["list"]:
-      doList(arguments["<address>"])
-    elif arguments["backup"]:
-      doBackup(arguments["<address>"], arguments["--output-file"])
-    elif arguments["restore"]:
-      doRestore(arguments["<address>"], arguments["--input-file"])
-    elif arguments["move"]:
-      doMove(arguments["<from-address>"], arguments["<to-address>"], arguments["--output-file"])
-    elif arguments["swap"]:
-      doSwap(arguments["<a-address>"], arguments["<b-address>"])
+  arguments = docopt(__doc__, version='Move DOF 0.1')
+  if arguments["list"]:
+    doList(arguments["<address>"])
+  elif arguments["backup"]:
+    doBackup(arguments["<address>"], arguments["--output-file"])
+  elif arguments["restore"]:
+    doRestore(arguments["<address>"], arguments["--input-file"])
+  elif arguments["move"]:
+    doMove(arguments["<from-address>"], arguments["<to-address>"], arguments["--output-file"])
+  elif arguments["swap"]:
+    doSwap(arguments["<a-address>"], arguments["<b-address>"])
