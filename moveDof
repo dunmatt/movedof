@@ -33,7 +33,7 @@ critical_parameters = [ ("P Gain", "P")
 def doBackup(addr, filename):
   for name, cmd in critical_parameters:
     print "Querying {0} on {1}.".format(name, addr)
-    raw_output = run (["XiControl", addr, "-c", cmd])
+    raw_output = run (["XiControl", addr, "-c", '"? {0}"'.format(cmd)])
     print raw_output
 
 
