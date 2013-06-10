@@ -2,7 +2,7 @@
 """Move DOF.
 
 Usage:
-  moveDof list <address>
+  moveDof list <address> [--input-file=<if> | -i <if>]
   moveDof backup <address> [--output-file=<of> | -o <of>]
   moveDof restore <address> (--input-file=<if> | -i <if>)
   moveDof move <from-address> <to-address> [--output-file=<of> | -o <of>]
@@ -35,8 +35,13 @@ critical_parameters = [ ("P Gain", "P")
                       ]
 
 
-def doList(addr):
-  values = queryEverything(addr)
+def doList(addr, filename):
+  values = {}
+  if filename:
+    with open(filename) as f:
+      values = pickle.load(f)
+  else:
+    values = queryEverything(addr)
   for k, v in values.iteritems():
     print "{0}: {1}".format(k, v)
 
@@ -89,7 +94,7 @@ def doSwap(a, b):
 if __name__ == '__main__':
   arguments = docopt(__doc__, version='Move DOF 0.1')
   if arguments["list"]:
-    doList(arguments["<address>"])
+    doList(arguments["<address>"], arguments["--input-file"])
   elif arguments["backup"]:
     doBackup(arguments["<address>"], arguments["--output-file"])
   elif arguments["restore"]:
