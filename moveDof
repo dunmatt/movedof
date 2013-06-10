@@ -2,7 +2,7 @@
 """Move DOF.
 
 Usage:
-  moveDof list <address> [--input-file=<if> | -i <if>]
+  moveDof list (<address> | (--input-file=<if> | -i <if>))
   moveDof backup <address> [--output-file=<of> | -o <of>]
   moveDof restore <address> (--input-file=<if> | -i <if>)
   moveDof move <from-address> <to-address> [--output-file=<of> | -o <of>]
