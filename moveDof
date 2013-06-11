@@ -19,18 +19,18 @@ import re
 
 from docopt import docopt
 from subprocess import check_output as run
-
-critical_parameters = [ ("P Gain", "P")
-                      , ("I Gain", "I")
-                      , ("D Gain", "D")
-                      , ("Dead Zone", "Z")
-                      , ("Lower Limit", "L")
-                      , ("Upper Limit", "U")
-                      , ("Limit Flags", "K")
-                      , ("Accumulator Limit", "A")
-                      , ("Encoder Frequency", "F")
-                      , ("Max PWM DC", "W")
-                      , ("Mode", "M")
+                  #       Name     Cmd  Requires-Configuration-Mode-Unlock
+critical_parameters = [ ("P Gain", "P", True)
+                      , ("I Gain", "I", True)
+                      , ("D Gain", "D", True)
+                      , ("Dead Zone", "Z", False)
+                      , ("Lower Limit", "L", False)
+                      , ("Upper Limit", "U", False)
+                      , ("Limit Flags", "K", False)
+                      , ("Accumulator Limit", "A", False)
+                      , ("Encoder Frequency", "F", False)
+                      , ("Max PWM DC", "W", False)
+                      , ("Mode", "M", True)
                       # , ("QEI Config", "E")
                       ]
 
@@ -79,9 +79,14 @@ def doRestore(addr, filename):
 
 
 def setEverything(addr, values):
-  for name, cmd in critical_parameters:
+  for name, cmd, needsUnlock in critical_parameters:
     if name in values:
-      run(["XiControl", "-n", addr, "-c", "o {0} {1}".format(cmd, values[name])])
+      if needsUnlock:
+        run(["XiControl", "-n", addr, "-U"])
+        run(["XiControl", "-n", addr, "-c", "o {0} {1}".format(cmd, values[name])])
+        run(["XiControl", "-n", addr, "-L"])
+      else:
+        run(["XiControl", "-n", addr, "-c", "o {0} {1}".format(cmd, values[name])])
 
 
 def doMove(src, dest, filename):
