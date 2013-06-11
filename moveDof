@@ -31,7 +31,7 @@ critical_parameters = [ ("P Gain", "P")
                       , ("Encoder Frequency", "F")
                       , ("Max PWM DC", "W")
                       , ("Mode", "M")
-                      , ("QEI Config", "E")
+                      # , ("QEI Config", "E")
                       ]
 
 
@@ -81,7 +81,8 @@ def setEverything(addr, values):
 
 
 def doMove(src, dest, filename):
-  setEverything(dest, doBackup(src, filename))
+  doBackup(dest, filename)
+  setEverything(dest, queryEverything(src))
 
 
 def doSwap(a, b):
