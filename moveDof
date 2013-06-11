@@ -82,9 +82,9 @@ def setEverything(addr, values):
   for name, cmd, needsUnlock in critical_parameters:
     if name in values:
       if needsUnlock:
-        run(["XiControl", "-n", addr, "-U"])
-        run(["XiControl", "-n", addr, "-c", "o {0} {1}".format(cmd, values[name])])
-        run(["XiControl", "-n", addr, "-L"])
+        print run(["XiControl", "-n", addr, "-U"])
+        print run(["XiControl", "-n", addr, "-c", "o {0} {1}".format(cmd, values[name])])
+        print run(["XiControl", "-n", addr, "-L"])
       else:
         run(["XiControl", "-n", addr, "-c", "o {0} {1}".format(cmd, values[name])])
 
