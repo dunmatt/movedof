@@ -64,7 +64,7 @@ def stripTabs(str):
 
 def queryEverything(addr):
   results = {}
-  for name, cmd in critical_parameters:
+  for name, cmd, _ in critical_parameters:
     raw_output = run(["XiControl", "-n", addr, "-c", '? {0}'.format(cmd)])
     result = re.search("^\*[^:]+:\s*(.+\S)\s*$",  raw_output, flags=re.MULTILINE)
     if result:
